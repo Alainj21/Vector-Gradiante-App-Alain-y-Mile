@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Gradiente</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Calculadora de Gradiente</h1>
+
+        <p>Ingresa la función f(x, y, z) y obtén su vector gradiente.</p>
+
+        <input type="text" id="funcion" placeholder="Ejemplo: x^2 + y^2 + z^2">
+
+        <button onclick="resolverGradiente()">Resolver</button>
+
+        <div id="resultado"></div>
+
+        <!-- 🔙 VOLVER AL MENÚ -->
+        <a href="index.html" class="btn-menu">Volver al menú</a>
+
+    </div>
+
+    <script>
+        function resolverGradiente() {
+            const f = document.getElementById("funcion").value;
+
+            if (!f.trim()) {
+                document.getElementById("resultado").innerHTML = 
+                    "<p style='color:red;'>Ingresa una función válida.</p>";
+                return;
+            }
+
+            try {
+                const fx = math.derivative(f, 'x').toString();
+                const fy = math.derivative(f, 'y').toString();
+                const fz = math.derivative(f, 'z').toString();
+
+                document.getElementById("resultado").innerHTML = `
+                    <h3>Resultado:</h3>
+                    <p>∂f/∂x = ${fx}</p>
+                    <p>∂f/∂y = ${fy}</p>
+                    <p>∂f/∂z = ${fz}</p>
+                    <p><strong>Grad(f) = (${fx}, ${fy}, ${fz})</strong></p>
+                `;
+            } 
+            catch (error) {
+                document.getElementById("resultado").innerHTML = 
+                    "<p style='color:red;'>Error en la función ingresada.</p>";
+            }
+        }
+    </script>
+
+    <!-- Math.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+
+</body>
+</html>
+
