@@ -12,7 +12,7 @@
 
         <h1>Calculadora de Gradiente</h1>
 
-        <p>Ingresa la función f(x, y, z) y obtén su vector gradiente.</p>
+        <p>Ingresa la función f(x, y, z) y obtén la derivada parcial, desarrollo y el gradiente en formato matemático.</p>
 
         <input type="text" id="funcion" placeholder="Ejemplo: x^2 + y^2 + z^2">
 
@@ -20,36 +20,77 @@
 
         <div id="resultado"></div>
 
-        <!-- 🔙 VOLVER AL MENÚ -->
         <a href="index.html" class="btn-menu">Volver al menú</a>
 
     </div>
 
     <script>
+        // FORMATEADOR: quita * y deja LaTeX limpio
+        function latexFormat(expr) {
+            return expr
+                .replace(/\*/g, "")               // quita "*"
+                .replace(/([0-9])([a-zA-Z])/g, "$1$2") // 2x
+                .replace(/([a-zA-Z])([a-zA-Z])/g, "$1 $2");
+        }
+
         function resolverGradiente() {
             const f = document.getElementById("funcion").value;
 
             if (!f.trim()) {
-                document.getElementById("resultado").innerHTML = 
+                document.getElementById("resultado").innerHTML =
                     "<p style='color:red;'>Ingresa una función válida.</p>";
                 return;
             }
 
             try {
-                const fx = math.derivative(f, 'x').toString();
-                const fy = math.derivative(f, 'y').toString();
-                const fz = math.derivative(f, 'z').toString();
+                // Derivadas sin simplificar
+                const fx_raw = math.derivative(f, 'x').toString();
+                const fy_raw = math.derivative(f, 'y').toString();
+                const fz_raw = math.derivative(f, 'z').toString();
 
+                // Derivadas simplificadas
+                const fx = latexFormat(math.simplify(fx_raw).toString());
+                const fy = latexFormat(math.simplify(fy_raw).toString());
+                const fz = latexFormat(math.simplify(fz_raw).toString());
+
+                // Mostrar todo en LaTeX
                 document.getElementById("resultado").innerHTML = `
                     <h3>Resultado:</h3>
-                    <p>∂f/∂x = ${fx}</p>
-                    <p>∂f/∂y = ${fy}</p>
-                    <p>∂f/∂z = ${fz}</p>
-                    <p><strong>Grad(f) = (${fx}, ${fy}, ${fz})</strong></p>
+
+                    <p><strong>Función ingresada:</strong></p>
+                    <p>\\(${f}\\)</p>
+
+                    <h3>Desarrollo paso a paso</h3>
+
+                    <p><strong>\\(\\frac{\\partial f}{\\partial x}\\) sin simplificar:</strong></p>
+                    <p>\\(${fx_raw}\\)</p>
+
+                    <p><strong>\\(\\frac{\\partial f}{\\partial x}\\) simplificado:</strong></p>
+                    <p>\\(${fx}\\)</p>
+
+                    <p><strong>\\(\\frac{\\partial f}{\\partial y}\\) sin simplificar:</strong></p>
+                    <p>\\(${fy_raw}\\)</p>
+
+                    <p><strong>\\(\\frac{\\partial f}{\\partial y}\\) simplificado:</strong></p>
+                    <p>\\(${fy}\\)</p>
+
+                    <p><strong>\\(\\frac{\\partial f}{\\partial z}\\) sin simplificar:</strong></p>
+                    <p>\\(${fz_raw}\\)</p>
+
+                    <p><strong>\\(\\frac{\\partial f}{\\partial z}\\) simplificado:</strong></p>
+                    <p>\\(${fz}\\)</p>
+
+                    <h3>Gradiente final:</h3>
+                    <p>\\[
+                        \\nabla f = ( ${fx},\; ${fy},\; ${fz} )
+                    \\]</p>
                 `;
-            } 
+
+                MathJax.typeset();
+
+            }
             catch (error) {
-                document.getElementById("resultado").innerHTML = 
+                document.getElementById("resultado").innerHTML =
                     "<p style='color:red;'>Error en la función ingresada.</p>";
             }
         }
@@ -58,6 +99,8 @@
     <!-- Math.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
 
+    <!-- MathJax -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 </body>
 </html>
-
